@@ -4,8 +4,8 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 > ⚠️ **Nota sobre os dados**: todos os valores de venda, datas e volumes exibidos neste projeto (planilha, prints e vídeos) são **fictícios**, gerados apenas para fins de demonstração. Nenhum dado real de clientes, transações ou faturamento é exposto.
 
-![Dashboard Fechamento](dashboard.png)
-<!-- 📸 Print do Dashboard completo (o que você já tem hoje) -->
+![Dashboard Fechamento](./pics/dashboard.png)
+
 
 ---
 
@@ -17,8 +17,8 @@ O fechamento de caixa era um processo **100% manual**: copiar valores de cada m�
 
 Com a automação via Power Query, o fechamento — que antes levava um tempo considerável todos os dias — agora é concluído em **menos de 1 minuto**. Divergências entre sistema e máquinas, que antes exigiam horas de busca manual, hoje são identificadas e sinalizadas automaticamente no próprio painel.
 
-![Demonstração do Atualizar Tudo](./assets/demo-atualizar.gif)
-<!-- 🎥 GIF: clicar em "Atualizar Tudo" e o Dashboard recalculando em tempo real -->
+![Demonstração do Atualizar Tudo](./pics/demo-atualizar.gif)
+
 
 ---
 
@@ -36,27 +36,21 @@ CSV bruto (adquirente)  →  Tabela nativa Excel  →  Power Query (ETL)  →  D
 3. **Regras de Negócio**: cálculo automático de divergências entre o valor do sistema interno e o valor batido pelas máquinas, com tratamento de erro (`IFERROR`) e arredondamento para eliminar ruído de ponto flutuante do Excel.
 4. **Parâmetros dinâmicos**: uma tabela de configuração (`Filtro_Periodo`) define o intervalo de datas do fechamento, usada por todas as consultas — basta alterar duas células para reprocessar tudo.
 
-![Editor Avançado do Power Query](./assets/power-query-editor.png)
+![Editor Avançado do Power Query](./pics/power-query-editor.png)
 <!-- 📸 Print do Editor Avançado mostrando o código M de uma das queries (ex: Dados_do_Grafico) -->
 
 ---
 
-## 🔄 Como Importar Novos Dados (Obter Dados)
+## 🔄 Como Importar Novos Dados
 
-Um dos pontos centrais da automação é que **atualizar o fechamento não exige nenhuma fórmula manual** — só trocar a fonte e atualizar. O fluxo é:
+Um dos pontos centrais da automação é que **atualizar o fechamento não exige nenhuma fórmula manual** — só colar os dados novos e atualizar. O fluxo é:
 
 1. Baixe o relatório do dia exportado pelo painel da adquirente (7Pay ou Sipag), normalmente em `.csv`.
-2. No Excel, vá em **Dados → Obter Dados → De Arquivo → De Texto/CSV**.
-3. Selecione o arquivo exportado. O Power Query mostra uma pré-visualização dos dados.
-4. Clique em **Carregar** para atualizar a tabela de origem correspondente (`Tabela_7Pay` na aba *Vendas 7Pay*, ou `Tabela_Sipag` na aba *Vendas Sipag*).
-5. Volte para o Dashboard e clique em **Dados → Atualizar Tudo** (ou `Ctrl+Alt+F5`).
-6. Todas as consultas (`Filtro_Periodo`, `Tabela_7Pay`, `Tabela_Sipag`, `Dados_do_Grafico`) são reprocessadas automaticamente e o painel é atualizado com os novos números — sem copiar, colar ou digitar nada manualmente.
+2. Abra o arquivo exportado e copie apenas as **linhas de dados** (sem a linha de cabeçalho).
+3. Cole essas linhas logo abaixo da última linha da tabela correspondente — `Tabela_7Pay` na aba *Vendas 7Pay*, ou `Tabela_Sipag` na aba *Vendas Sipag*. Por serem Tabelas nativas do Excel, elas se expandem automaticamente para incluir as novas linhas.
+4. Volte para o Dashboard e clique em **Dados → Atualizar Tudo** (ou `Ctrl+Alt+F5`).
+5. Todas as consultas (`Filtro_Periodo`, `Tabela_7Pay`, `Tabela_Sipag`, `Dados_do_Grafico`) são reprocessadas automaticamente e o painel é atualizado com os novos números — sem digitar nada manualmente.
 
-![Obter Dados no menu Dados](./assets/obter-dados.png)
-<!-- 📸 Print do grupo "Obter e Transformar Dados" na guia Dados, com "De Texto/CSV" em destaque -->
-
-![Importando um novo CSV](./assets/demo-importar-csv.gif)
-<!-- 🎥 GIF: Dados > Obter Dados > De Texto/CSV > selecionar arquivo > Carregar > Atualizar Tudo -->
 
 ---
 
@@ -69,8 +63,8 @@ Um dos pontos centrais da automação é que **atualizar o fechamento não exige
 | `Fechamento 7Pay` / `Fechamento Sipag` | Dados já tratados pelo Power Query, prontos para o Dashboard |
 | `Configuração` | Parâmetros do período de análise (`Filtro_Periodo`) e dados auxiliares do gráfico por horário |
 
-![Consultas e Conexões do Power Query](./assets/consultas-conexoes.png)
-<!-- 📸 Print do painel lateral "Consultas e Conexões" mostrando as 4 queries -->
+![Consultas e Conexões do Power Query](./pics/consultas-conexoes.png)
+
 
 ---
 
