@@ -241,22 +241,6 @@ services:
     networks:
       - disparo-net
 
-  disparo_duckdns:
-    container_name: disparo_duckdns
-    image: linuxserver/duckdns:latest
-    restart: always
-    environment:
-      - SUBDOMAINS=canevaspub
-      - TOKEN=${DUCKDNS_TOKEN}
-      - LOG_FILE=false
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - disparo-net
-
   disparo_nginx:
     container_name: disparo_nginx
     image: nginx:1.24-alpine
