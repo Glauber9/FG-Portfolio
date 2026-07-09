@@ -1,0 +1,260 @@
+{% extends "admin/index.html" %}
+{% load i18n unfold %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+    .periodo-toggle {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .periodo-btn {
+        font-size: 12px;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        border: 1px solid var(--color-base-700);
+        color: var(--color-base-400);
+        background: transparent;
+        cursor: pointer;
+        transition: all .15s ease;
+    }
+
+    .periodo-btn:hover {
+        color: var(--color-base-100);
+        border-color: var(--color-base-500);
+    }
+
+    .periodo-btn.periodo-ativo {
+        background: var(--color-primary-600);
+        border-color: var(--color-primary-600);
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% component "unfold/components/container.html" %}
+
+
+    {% component "unfold/components/flex.html" with class="gap-4 mb-4 flex-col sm:flex-row sm:flex-wrap" %}
+        {% for kpi in kpis %}
+        {% component "unfold/components/card.html" with class="sm:w-[calc(50%-0.5rem)] lg:w-[calc(20%-0.8rem)]" %}
+            {% component "unfold/components/text.html" %}
+                {{ kpi.title }}
+            {% endcomponent %}
+            {% component "unfold/components/title.html" %}
+                {{ kpi.value }}
+            {% endcomponent %}
+        {% endcomponent %}
+        {% endfor %}
+    {% endcomponent %}
+
+
+    {% component "unfold/components/flex.html" with class="gap-4 mb-4 flex-col lg:flex-row items-stretch" %}
+
+        {% trans "Envios por canal" as titulo_linha %}
+        {% component "unfold/components/card.html" with title=titulo_linha class="lg:w-2/3" %}
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <div class="flex gap-6 text-sm">
+                    {% for canal in envios_por_canal_hoje %}
+                    <div>
+                        <span class="text-base-500 dark:text-base-400">{{ canal.title }} {% trans "hoje" %}:</span>
+                        <span class="font-semibold text-base-900 dark:text-base-100">{{ canal.value }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="periodo-toggle" data-grupo="canal">
+                    <button type="button" class="periodo-btn periodo-ativo" data-tipo="canal" data-periodo="7d">{% trans "7 dias" %}</button>
+                    <button type="button" class="periodo-btn" data-tipo="canal" data-periodo="30d">{% trans "30 dias" %}</button>
+                    <button type="button" class="periodo-btn" data-tipo="canal" data-periodo="total">{% trans "Total" %}</button>
+                </div>
+            </div>
+            <div class="relative h-64">
+                <canvas id="chartEnviosCanal"></canvas>
+            </div>
+        {% endcomponent %}
+
+        {% trans "Status dos envios" as titulo_rosca %}
+        {% component "unfold/components/card.html" with title=titulo_rosca class="lg:w-1/3" %}
+            <div class="flex justify-end mb-4">
+                <div class="periodo-toggle" data-grupo="status">
+                    <button type="button" class="periodo-btn periodo-ativo" data-tipo="status" data-periodo="hoje">{% trans "Hoje" %}</button>
+                    <button type="button" class="periodo-btn" data-tipo="status" data-periodo="7d">{% trans "7 dias" %}</button>
+                    <button type="button" class="periodo-btn" data-tipo="status" data-periodo="30d">{% trans "30 dias" %}</button>
+                    <button type="button" class="periodo-btn" data-tipo="status" data-periodo="total">{% trans "Total" %}</button>
+                </div>
+            </div>
+            <div class="relative h-64 flex items-center justify-center">
+                <canvas id="chartStatusHoje"></canvas>
+            </div>
+        {% endcomponent %}
+
+    {% endcomponent %}
+
+    {% trans "Campanhas ativas agora" as titulo_ativas %}
+    {% component "unfold/components/card.html" with title=titulo_ativas class="mb-4" %}
+        {% if campanhas_ativas_progresso %}
+        <div class="flex flex-col gap-4">
+            {% for c in campanhas_ativas_progresso %}
+            <div>
+                <div class="flex justify-between items-baseline mb-1 text-sm">
+                    <span class="font-medium text-base-900 dark:text-base-100">{{ c.nome }}</span>
+                    <span class="text-base-500 dark:text-base-400">
+                        {{ c.processados }}/{{ c.total }} · {{ c.pct }}%
+                    </span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-base-200 dark:bg-base-800 overflow-hidden">
+                    <div class="h-2 rounded-full bg-primary-500" style="width: {{ c.pct }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-base-500 dark:text-base-400 text-sm">{% trans "Nenhuma campanha em andamento" %}</p>
+        {% endif %}
+    {% endcomponent %}
+
+    {% trans "Últimas campanhas" as titulo_ultimas %}
+    {% component "unfold/components/card.html" with title=titulo_ultimas class="mb-4" %}
+        {% component "unfold/components/table.html" with table=tabela_ultimas_campanhas card_included=1 %}
+        {% endcomponent %}
+    {% endcomponent %}
+
+{% endcomponent %}
+
+{{ serie_labels|json_script:"serie-labels" }}
+{{ serie_whatsapp|json_script:"serie-whatsapp" }}
+{{ serie_email|json_script:"serie-email" }}
+{{ donut_labels|json_script:"donut-labels" }}
+{{ donut_data|json_script:"donut-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const URL_DADOS = "{% url 'admin:campanhas_campanha_dashboard_dados' %}";
+
+    const serieLabels = JSON.parse(document.getElementById("serie-labels").textContent);
+    const serieWhatsapp = JSON.parse(document.getElementById("serie-whatsapp").textContent);
+    const serieEmail = JSON.parse(document.getElementById("serie-email").textContent);
+    const donutLabelsIniciais = JSON.parse(document.getElementById("donut-labels").textContent);
+    const donutDataIniciais = JSON.parse(document.getElementById("donut-data").textContent);
+
+    const donutColorMap = {
+        "Pendente": "#cbd5e1",
+        "Enviado": "#57534e",
+        "Entregue": "#f59e0b",
+        "Lido": "#1e6091",
+        "Falha": "#ef4444",
+        "Opt-out": "#fbbf24",
+    };
+
+    function coresRosca(labels) {
+        return labels.map((l) => donutColorMap[l] || "#94a3b8");
+    }
+
+    let chartLinha = null;
+    let chartRosca = null;
+
+    const ctxLinha = document.getElementById("chartEnviosCanal");
+    if (ctxLinha) {
+        chartLinha = new Chart(ctxLinha, {
+            type: "line",
+            data: {
+                labels: serieLabels,
+                datasets: [
+                    {
+                        label: "WhatsApp",
+                        data: serieWhatsapp,
+                        borderColor: "#f59e0b",
+                        backgroundColor: "rgba(245, 158, 11, 0.15)",
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 3,
+                    },
+                    {
+                        label: "E-mail",
+                        data: serieEmail,
+                        borderColor: "#64748b",
+                        backgroundColor: "rgba(100, 116, 139, 0.12)",
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 3,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom" } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+            },
+        });
+    }
+
+    const ctxRosca = document.getElementById("chartStatusHoje");
+    if (ctxRosca) {
+        chartRosca = new Chart(ctxRosca, {
+            type: "doughnut",
+            data: {
+                labels: donutLabelsIniciais,
+                datasets: [
+                    {
+                        data: donutDataIniciais,
+                        backgroundColor: coresRosca(donutLabelsIniciais),
+                        borderWidth: 0,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom" } },
+            },
+        });
+    }
+
+    function marcarBotaoAtivo(grupo, periodo) {
+        document.querySelectorAll('.periodo-toggle[data-grupo="' + grupo + '"] .periodo-btn').forEach(function (btn) {
+            btn.classList.toggle("periodo-ativo", btn.dataset.periodo === periodo);
+        });
+    }
+
+    async function buscarDados(tipo, periodo) {
+        const resp = await fetch(URL_DADOS + "?tipo=" + tipo + "&periodo=" + periodo, {
+            credentials: "same-origin",
+        });
+        if (!resp.ok) return null;
+        return resp.json();
+    }
+
+    document.querySelectorAll('.periodo-btn[data-tipo="canal"]').forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+            const periodo = btn.dataset.periodo;
+            marcarBotaoAtivo("canal", periodo);
+            const dados = await buscarDados("canal", periodo);
+            if (!dados || !chartLinha) return;
+            chartLinha.data.labels = dados.labels;
+            chartLinha.data.datasets[0].data = dados.whatsapp;
+            chartLinha.data.datasets[1].data = dados.email;
+            chartLinha.update();
+        });
+    });
+
+    document.querySelectorAll('.periodo-btn[data-tipo="status"]').forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+            const periodo = btn.dataset.periodo;
+            marcarBotaoAtivo("status", periodo);
+            const dados = await buscarDados("status", periodo);
+            if (!dados || !chartRosca) return;
+            chartRosca.data.labels = dados.labels;
+            chartRosca.data.datasets[0].data = dados.data;
+            chartRosca.data.datasets[0].backgroundColor = coresRosca(dados.labels);
+            chartRosca.update();
+        });
+    });
+});
+</script>
+
+{% endblock %}

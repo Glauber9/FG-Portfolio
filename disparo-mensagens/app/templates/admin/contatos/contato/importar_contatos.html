@@ -1,0 +1,269 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .importar-contatos-wrap {
+        max-width: 720px;
+        margin: 24px 0;
+    }
+
+    .ic-card {
+        background: var(--color-base-900);
+        border: 1px solid var(--color-base-800);
+        border-radius: 12px;
+        padding: 28px 32px;
+        color: var(--color-base-100);
+    }
+
+    .ic-card h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 4px;
+        color: var(--color-base-50);
+    }
+
+    .ic-card p.ic-subtitle {
+        color: var(--color-base-400);
+        margin: 0 0 20px;
+        font-size: 13px;
+    }
+
+    .ic-info-list {
+        background: var(--color-base-950);
+        border: 1px solid var(--color-base-800);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        list-style: none;
+    }
+
+    .ic-info-list li {
+        font-size: 13px;
+        color: var(--color-base-300);
+        padding: 4px 0;
+        display: flex;
+        gap: 8px;
+    }
+
+    .ic-info-list li strong {
+        color: var(--color-base-50);
+        font-weight: 600;
+    }
+
+    .ic-info-list li .ic-bullet {
+        color: var(--color-primary-500);
+        flex-shrink: 0;
+    }
+
+    .ic-dropzone {
+        border: 2px dashed var(--color-base-700);
+        border-radius: 10px;
+        padding: 36px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color .15s ease, background-color .15s ease;
+        background: var(--color-base-950);
+    }
+
+    .ic-dropzone.ic-dragover {
+        border-color: var(--color-primary-500);
+        background: var(--color-primary-950);
+    }
+
+    .ic-dropzone svg {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 10px;
+        color: var(--color-base-500);
+    }
+
+    .ic-dropzone-text {
+        color: var(--color-base-300);
+        font-size: 14px;
+        margin: 0 0 4px;
+    }
+
+    .ic-dropzone-text strong {
+        color: var(--color-primary-400);
+    }
+
+    .ic-dropzone-hint {
+        color: var(--color-base-500);
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .ic-filename {
+        margin-top: 14px;
+        font-size: 13px;
+        color: var(--color-primary-400);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .ic-filename.ic-visible {
+        display: flex;
+    }
+
+    .ic-errors {
+        margin-top: 14px;
+        background: #2a1215;
+        border: 1px solid #7f1d1d;
+        color: #fca5a5;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .ic-errors ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .ic-actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+    }
+
+    .ic-btn-primary {
+        background: var(--color-primary-600);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .ic-btn-primary:hover {
+        background: var(--color-primary-700);
+    }
+
+    .ic-btn-secondary {
+        background: transparent;
+        color: var(--color-base-400);
+        border: 1px solid var(--color-base-700);
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .ic-btn-secondary:hover {
+        color: var(--color-base-100);
+        border-color: var(--color-base-600);
+    }
+
+    .ic-hidden-input {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="importar-contatos-wrap">
+    <div class="ic-card">
+        <h1>{% trans "Importar Contatos" %}</h1>
+        <p class="ic-subtitle">{% trans "Envie uma planilha para cadastrar ou atualizar contatos em massa." %}</p>
+
+        <ul class="ic-info-list">
+            <li><span class="ic-bullet">✓</span><span><strong>{% trans "Formatos aceitos:" %}</strong> .csv, .xlsx</span></li>
+            <li><span class="ic-bullet">✓</span><span><strong>{% trans "Colunas obrigatórias:" %}</strong> nome, telefone, email</span></li>
+            <li><span class="ic-bullet">✓</span><span><strong>{% trans "Colunas opcionais:" %}</strong> ativo, opt_out</span></li>
+            <li><span class="ic-bullet">✓</span><span>{% trans "Contatos existentes (mesmo telefone ou email) são atualizados, não duplicados." %}</span></li>
+        </ul>
+
+        <form method="post" enctype="multipart/form-data" id="ic-form">
+            {% csrf_token %}
+
+            <div class="ic-dropzone" id="ic-dropzone">
+                <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                </svg>
+                <p class="ic-dropzone-text"><strong>{% trans "Clique para escolher um arquivo" %}</strong> {% trans "ou arraste aqui" %}</p>
+                <p class="ic-dropzone-hint">.csv {% trans "ou" %} .xlsx — {% trans "máx. recomendado: alguns milhares de linhas" %}</p>
+                <div class="ic-filename" id="ic-filename">
+                    <span>📄</span><span id="ic-filename-text"></span>
+                </div>
+            </div>
+
+            <input type="file" name="{{ form.arquivo.html_name }}" id="ic-file-input"
+                   class="ic-hidden-input" accept=".csv,.xlsx,.xls">
+
+            {% if form.arquivo.errors or form.non_field_errors %}
+            <div class="ic-errors">
+                <ul>
+                    {% for erro in form.non_field_errors %}<li>{{ erro }}</li>{% endfor %}
+                    {% for erro in form.arquivo.errors %}<li>{{ erro }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="ic-actions">
+                <button type="submit" class="ic-btn-primary">{% trans "Importar" %}</button>
+                <a href="{% url 'admin:contatos_contato_changelist' %}" class="ic-btn-secondary">{% trans "Cancelar" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    var dropzone = document.getElementById('ic-dropzone');
+    var input = document.getElementById('ic-file-input');
+    var filenameBox = document.getElementById('ic-filename');
+    var filenameText = document.getElementById('ic-filename-text');
+
+    function mostrarArquivo(file) {
+        if (!file) return;
+        filenameText.textContent = file.name;
+        filenameBox.classList.add('ic-visible');
+    }
+
+    dropzone.addEventListener('click', function () {
+        input.click();
+    });
+
+    input.addEventListener('change', function () {
+        if (input.files && input.files[0]) {
+            mostrarArquivo(input.files[0]);
+        }
+    });
+
+    ['dragenter', 'dragover'].forEach(function (evento) {
+        dropzone.addEventListener(evento, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('ic-dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(function (evento) {
+        dropzone.addEventListener(evento, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('ic-dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', function (e) {
+        var arquivos = e.dataTransfer.files;
+        if (arquivos && arquivos[0]) {
+            input.files = arquivos;
+            mostrarArquivo(arquivos[0]);
+        }
+    });
+})();
+</script>
+{% endblock %}

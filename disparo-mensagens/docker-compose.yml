@@ -1,0 +1,309 @@
+services:
+
+  disparo_postgres:
+    container_name: disparo_postgres
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_redis:
+    container_name: disparo_redis
+    image: redis:alpine
+    restart: always
+    command: ["sh", "-c", "redis-server --requirepass \"$$(cat /run/secrets/redis_password)\" --appendonly yes"]
+    volumes:
+      - redis_data:/data
+    expose:
+      - "6379"
+    secrets:
+      - redis_password
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$(cat /run/secrets/redis_password)\" ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_evolution:
+    container_name: disparo_evolution
+    image: evoapicloud/evolution-api:latest
+    restart: always
+    volumes:
+      - evolution_instances:/evolution/instances
+    expose:
+      - "8080"
+    env_file:
+      - .env
+    secrets:
+      - postgres_password
+      - redis_password
+      - authentication_api_key
+      - evolution_webhook_secret
+      - email_host_password
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        export POSTGRES_PASSWORD="$$(cat /run/secrets/postgres_password)"
+        export REDIS_PASSWORD="$$(cat /run/secrets/redis_password)"
+        export AUTHENTICATION_API_KEY="$$(cat /run/secrets/authentication_api_key)"
+        export EVOLUTION_WEBHOOK_SECRET="$$(cat /run/secrets/evolution_webhook_secret)"
+        export EMAIL_HOST_PASSWORD="$$(cat /run/secrets/email_host_password)"
+        export DATABASE_URL="postgres://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@$${POSTGRES_HOST:-disparo_postgres}:$${POSTGRES_PORT:-5432}/$${POSTGRES_DB}"
+        export REDIS_URL="redis://:$${REDIS_PASSWORD}@$${REDIS_HOST:-disparo_redis}:$${REDIS_PORT:-6379}/0"
+        export CELERY_BROKER_URL="$${REDIS_URL}"
+        export CELERY_RESULT_BACKEND="redis://:$${REDIS_PASSWORD}@$${REDIS_HOST:-disparo_redis}:$${REDIS_PORT:-6379}/1"
+        export DATABASE_CONNECTION_URI="postgres://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@$${POSTGRES_HOST:-disparo_postgres}:$${POSTGRES_PORT:-5432}/$${POSTGRES_DB}?schema=evolution_api"
+        export CACHE_REDIS_URI="redis://:$${REDIS_PASSWORD}@$${REDIS_HOST:-disparo_redis}:$${REDIS_PORT:-6379}/1"
+        . ./Docker/scripts/deploy_database.sh && exec npm run start:prod
+    depends_on:
+      disparo_postgres:
+        condition: service_healthy
+      disparo_redis:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_evolution_manager:
+    container_name: disparo_evolution_manager
+    image: evoapicloud/evolution-manager:latest
+    restart: always
+    entrypoint: /bin/sh -c "sed -i 's/must-revalidate //' /etc/nginx/conf.d/nginx.conf && /start.sh"
+    expose:
+      - "80"
+    environment:
+      - SERVER_URL=${PUBLIC_BASE_URL}/evolution-api
+    depends_on:
+      - disparo_evolution
+    networks:
+      - disparo-net
+
+  disparo_django:
+    container_name: disparo_django
+    build: ./app
+    restart: always
+    command: bash /app/entrypoint.sh
+    volumes:
+      - ./app:/app
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    secrets:
+      - postgres_password
+      - redis_password
+      - django_secret_key
+      - authentication_api_key
+      - evolution_webhook_secret
+      - email_host_password
+    environment:
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-3}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
+      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
+      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
+      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+    depends_on:
+      disparo_postgres:
+        condition: service_healthy
+      disparo_redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_celery:
+    container_name: disparo_celery
+    build: ./app
+    restart: always
+    command: celery -A config worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2} -Q celery,whatsapp,email
+    volumes:
+      - ./app:/app
+      - media_files:/app/media
+    env_file:
+      - .env
+    secrets:
+      - postgres_password
+      - redis_password
+      - django_secret_key
+      - authentication_api_key
+      - evolution_webhook_secret
+      - email_host_password
+    environment:
+      - HOME=/tmp
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
+      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
+      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
+      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+    depends_on:
+      disparo_postgres:
+        condition: service_healthy
+      disparo_redis:
+        condition: service_healthy
+      disparo_django:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_celery_beat:
+    container_name: disparo_celery_beat
+    build: ./app
+    restart: always
+    command: celery -A config beat --loglevel=info
+    volumes:
+      - ./app:/app
+      - media_files:/app/media
+    env_file:
+      - .env
+    secrets:
+      - postgres_password
+      - redis_password
+      - django_secret_key
+      - authentication_api_key
+      - evolution_webhook_secret
+      - email_host_password
+    environment:
+      - HOME=/tmp
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
+      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
+      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
+      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
+      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+    depends_on:
+      disparo_postgres:
+        condition: service_healthy
+      disparo_redis:
+        condition: service_healthy
+      disparo_django:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_duckdns:
+    container_name: disparo_duckdns
+    image: linuxserver/duckdns:latest
+    restart: always
+    environment:
+      - SUBDOMAINS=canevaspub
+      - TOKEN=${DUCKDNS_TOKEN}
+      - LOG_FILE=false
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+  disparo_nginx:
+    container_name: disparo_nginx
+    image: nginx:1.24-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/conf.d/default.conf
+      - static_files:/app/staticfiles
+    depends_on:
+      disparo_django:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/health/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - disparo-net
+
+volumes:
+  postgres_data:
+  redis_data:
+  evolution_instances:
+  static_files:
+  media_files:
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password
+  redis_password:
+    file: ./secrets/redis_password
+  django_secret_key:
+    file: ./secrets/django_secret_key
+  authentication_api_key:
+    file: ./secrets/authentication_api_key
+  evolution_webhook_secret:
+    file: ./secrets/evolution_webhook_secret
+  email_host_password:
+    file: ./secrets/email_host_password
+
+networks:
+  disparo-net:
+    driver: bridge
