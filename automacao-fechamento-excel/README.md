@@ -4,7 +4,7 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 > ⚠️ **Nota sobre os dados**: todos os valores de venda, datas e volumes exibidos neste projeto (planilha, prints e vídeos) são **fictícios**, gerados apenas para fins de demonstração. Nenhum dado real de clientes, transações ou faturamento é exposto.
 
-![Dashboard Fechamento](./pics/dashboard.png)
+![Dashboard Fechamento](./pic/dashboard.png)
 
 
 ---
@@ -17,7 +17,7 @@ O fechamento de caixa era um processo **100% manual**: copiar valores de cada m�
 
 Com a automação via Power Query, o fechamento — que antes levava um tempo considerável todos os dias — agora é concluído em **menos de 1 minuto**. Divergências entre sistema e máquinas, que antes exigiam horas de busca manual, hoje são identificadas e sinalizadas automaticamente no próprio painel.
 
-![Demonstração do Atualizar Tudo](./pics/demo-atualizar.gif)
+![Demonstração do Atualizar Tudo](./pic/demo-atualizar.gif)
 
 
 ---
@@ -36,8 +36,8 @@ CSV bruto (adquirente)  →  Tabela nativa Excel  →  Power Query (ETL)  →  D
 3. **Regras de Negócio**: cálculo automático de divergências entre o valor do sistema interno e o valor batido pelas máquinas, com tratamento de erro (`IFERROR`) e arredondamento para eliminar ruído de ponto flutuante do Excel.
 4. **Parâmetros dinâmicos**: uma tabela de configuração (`Filtro_Periodo`) define o intervalo de datas do fechamento, usada por todas as consultas — basta alterar duas células para reprocessar tudo.
 
-![Editor Avançado do Power Query](./pics/power-query-editor.png)
-<!-- 📸 Print do Editor Avançado mostrando o código M de uma das queries (ex: Dados_do_Grafico) -->
+![Editor Avançado do Power Query](./pic/power-query-editor.png)
+
 
 ---
 
@@ -63,7 +63,7 @@ Um dos pontos centrais da automação é que **atualizar o fechamento não exige
 | `Fechamento 7Pay` / `Fechamento Sipag` | Dados já tratados pelo Power Query, prontos para o Dashboard |
 | `Configuração` | Parâmetros do período de análise (`Filtro_Periodo`) e dados auxiliares do gráfico por horário |
 
-![Consultas e Conexões do Power Query](./pics/consultas-conexoes.png)
+![Consultas e Conexões do Power Query](./pic/consultas-conexoes.png)
 
 
 ---
