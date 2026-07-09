@@ -4,7 +4,7 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 > ⚠️ **Nota sobre os dados**: todos os valores de venda, datas e volumes exibidos neste projeto (planilha, prints e vídeos) são **fictícios**, gerados apenas para fins de demonstração. Nenhum dado real de clientes, transações ou faturamento é exposto.
 
-![Dashboard Fechamento](./assets/dashboard.png)
+![Dashboard Fechamento](dashboard.png)
 <!-- 📸 Print do Dashboard completo (o que você já tem hoje) -->
 
 ---
