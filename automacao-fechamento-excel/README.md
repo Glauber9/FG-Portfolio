@@ -92,7 +92,7 @@ A aba principal foi desenhada seguindo padrões modernos de UI:
 
 ## 🚀 Próximos Passos (V2)
 
-Este projeto serve de base para a **Versão 2**, onde toda a lógica hoje implementada em Power Query será migrada para:
+Este projeto serve de base para a **Versão 2**, que será desenvolvida e lançada posteriormente, onde toda a lógica hoje implementada em Power Query será migrada para:
 
 - Scripts em **Python** para o ETL
 - Banco de dados **PostgreSQL**
