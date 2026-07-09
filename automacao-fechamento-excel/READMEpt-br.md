@@ -1,4 +1,4 @@
-# 💳 Automação de Fechamento de Caixa
+# 💳 Automação de Conciliação de Vendas PDV (Excel + Power Query)
 
 Solução automatizada para o processo de fechamento financeiro diário e conciliação de vendas entre duas ou mais máquinas de cartão de diferentes adquirentes, construída inteiramente em **Excel + Power Query**.
 
