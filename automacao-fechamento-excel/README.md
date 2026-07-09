@@ -4,8 +4,6 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 > ⚠️ **Nota sobre os dados**: todos os valores de venda, datas e volumes exibidos neste projeto (planilha, prints e vídeos) são **fictícios**, gerados apenas para fins de demonstração. Nenhum dado real de clientes, transações ou faturamento é exposto.
 
-![Dashboard Fechamento](./pic/dashboard.png)
-
 
 ---
 
@@ -75,6 +73,8 @@ A aba principal foi desenhada seguindo padrões modernos de UI:
 - Fundo limpo e sem linhas de grade, para reduzir a poluição visual e manter o foco nos números.
 - Cards isolados para destacar os KPIs mais importantes (faturamento por forma de pagamento, ticket médio, divergências).
 - Gráficos interativos (rosca de participação por forma de pagamento + linha de vendas por horário) para leitura rápida do comportamento do dia.
+
+![Dashboard Fechamento](./pic/dashboard.png)
 
 ---
 
