@@ -86,7 +86,7 @@ if not env.bool('DJANGO_DEBUG', default=False) and not env.list('DJANGO_ALLOWED_
 
 SECRET_KEY = _read_env_secret('DJANGO_SECRET_KEY')
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1', 'canevaspub.duckdns.org'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1', 'seudominio.com'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
 
 DJANGO_APPS = [
