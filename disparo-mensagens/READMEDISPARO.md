@@ -122,7 +122,6 @@ docker-compose logs -f disparo_django
 |---|---|
 | `.env.dev` | Base do ambiente local |
 | `.env.producao` | Base do ambiente de servidor |
-| `.env.example` | Exemplo seguro para publicar no GitHub |
 | `.env` | Arquivo que o Docker lê de fato quando o projeto sobe |
 | `secrets/` | Arquivos locais com senhas e chaves sensíveis, usados pelo Docker Secrets |
 
@@ -136,9 +135,8 @@ O `.env` guarda apenas configuração **não sensível** — hosts, portas e fla
 - `secrets/email_host_password`
 
 **Regra simples:**
-- Testando na sua máquina → use `.env.dev`
-- Subindo no servidor → use `.env.producao`
-- Publicando no GitHub → deixe só `.env.example` com valores seguros
+- Testando na sua máquina → cp `.env.dev` para `.env`
+- Subindo no servidor → cp `.env.producao` para `.env`
 
 ---
 
