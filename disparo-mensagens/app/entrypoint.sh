@@ -1,4 +1,3 @@
-#!/bin/bash
 set -e
 
 WAIT_TIMEOUT=${WAIT_TIMEOUT_SECONDS:-60}
