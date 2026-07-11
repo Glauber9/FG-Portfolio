@@ -23,9 +23,6 @@ Sistema de disparo de mensagens em massa via WhatsApp, construído com **Django*
 - [Estrutura de diretórios](#-estrutura-de-diretórios)
 - [Importação de contatos](#-importação-de-contatos)
 - [Comandos úteis](#-comandos-úteis)
-- [Melhorias de segurança](#-melhorias-de-segurança)
-- [Problemas comuns](#-problemas-comuns)
-- [Documentação adicional](#-documentação-adicional)
 - [Contato e contribuição](#-contato-e-contribuição)
 
 ---
