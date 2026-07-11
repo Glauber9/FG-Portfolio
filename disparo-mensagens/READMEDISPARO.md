@@ -188,8 +188,8 @@ disparo-mensagens/
 │   └── nginx.conf
 ├── docker-compose.yml
 ├── docker-compose.prod.yml
-├── .env.example
-└── README.md
+├── .env
+
 ```
 
 ### Fluxo de execução
@@ -326,61 +326,6 @@ Antes de subir em servidor, confirme:
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
-
----
-
-## 🔒 Melhorias de segurança
-
-- [ ] Remover `ports: "8000:8000"` do Django no `docker-compose.yml`
-- [x] Usar Docker Secrets para senhas e chaves sensíveis (ao invés de `.env`)
-- [ ] Configurar SSL/TLS no Nginx
-- [ ] Habilitar HTTPS via Let's Encrypt
-- [ ] Usar variáveis de ambiente seguras (AWS Secrets Manager, Vault, etc.)
-- [ ] Configurar WAF (Web Application Firewall)
-- [ ] Implementar rate limiting no Nginx
-
----
-
-## 🩹 Problemas comuns
-
-**Django aparece como unhealthy**
-Normalmente indica que o boot do Django falhou antes do healthcheck responder.
-```bash
-docker-compose logs -f disparo_django
-```
-
-**"Connection refused" ao conectar ao Django**
-```bash
-docker-compose ps disparo_django
-docker-compose logs disparo_django
-```
-
-**Migrations não rodaram**
-```bash
-docker-compose exec disparo_django python manage.py migrate --verbosity=2
-```
-
-**Redis ou Postgres não iniciam**
-```bash
-docker-compose down -v
-docker-compose build --no-cache
-docker-compose up -d
-```
-
-**Celery não processa tarefas**
-```bash
-docker-compose exec disparo_redis redis-cli -a <REDIS_PASSWORD> PING
-docker-compose logs -f disparo_celery
-```
-
----
-
-## 📚 Documentação adicional
-
-- [DOCKER_IMPROVEMENTS.md](DOCKER_IMPROVEMENTS.md) — melhorias do Docker
-- [Django Docs](https://docs.djangoproject.com/)
-- [Celery Docs](https://docs.celeryproject.org/)
-- [Evolution API Docs](https://doc.evoapicloud.com/)
 
 ---
 
