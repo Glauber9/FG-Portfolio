@@ -1,3 +1,19 @@
+x-app-secrets: &app-secrets
+  - postgres_password
+  - redis_password
+  - django_secret_key
+  - authentication_api_key
+  - evolution_webhook_secret
+  - email_host_password
+
+x-app-secret-env: &app-secret-env
+  POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+  REDIS_PASSWORD_FILE: /run/secrets/redis_password
+  DJANGO_SECRET_KEY_FILE: /run/secrets/django_secret_key
+  AUTHENTICATION_API_KEY_FILE: /run/secrets/authentication_api_key
+  EVOLUTION_WEBHOOK_SECRET_FILE: /run/secrets/evolution_webhook_secret
+  EMAIL_HOST_PASSWORD_FILE: /run/secrets/email_host_password
+
 services:
 
   disparo_postgres:
@@ -123,25 +139,12 @@ services:
       - media_files:/app/media
     expose:
       - "8000"
-    ports:
-      - "8000:8000"
     env_file:
       - .env
-    secrets:
-      - postgres_password
-      - redis_password
-      - django_secret_key
-      - authentication_api_key
-      - evolution_webhook_secret
-      - email_host_password
+    secrets: *app-secrets
     environment:
-      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-3}
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
-      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
-      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
-      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
-      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+      <<: *app-secret-env
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
     depends_on:
       disparo_postgres:
         condition: service_healthy
@@ -171,21 +174,10 @@ services:
       - media_files:/app/media
     env_file:
       - .env
-    secrets:
-      - postgres_password
-      - redis_password
-      - django_secret_key
-      - authentication_api_key
-      - evolution_webhook_secret
-      - email_host_password
+    secrets: *app-secrets
     environment:
-      - HOME=/tmp
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
-      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
-      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
-      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
-      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+      <<: *app-secret-env
+      HOME: /tmp
     depends_on:
       disparo_postgres:
         condition: service_healthy
@@ -211,21 +203,10 @@ services:
       - media_files:/app/media
     env_file:
       - .env
-    secrets:
-      - postgres_password
-      - redis_password
-      - django_secret_key
-      - authentication_api_key
-      - evolution_webhook_secret
-      - email_host_password
+    secrets: *app-secrets
     environment:
-      - HOME=/tmp
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
-      - REDIS_PASSWORD_FILE=/run/secrets/redis_password
-      - DJANGO_SECRET_KEY_FILE=/run/secrets/django_secret_key
-      - AUTHENTICATION_API_KEY_FILE=/run/secrets/authentication_api_key
-      - EVOLUTION_WEBHOOK_SECRET_FILE=/run/secrets/evolution_webhook_secret
-      - EMAIL_HOST_PASSWORD_FILE=/run/secrets/email_host_password
+      <<: *app-secret-env
+      HOME: /tmp
     depends_on:
       disparo_postgres:
         condition: service_healthy
@@ -290,4 +271,5 @@ secrets:
 
 networks:
   disparo-net:
+    driver: bridge
     driver: bridge
