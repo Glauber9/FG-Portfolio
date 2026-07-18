@@ -1,7 +1,6 @@
 import os
 import logging
 from pathlib import Path
-
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
@@ -37,7 +36,7 @@ def _with_sentry(wsgi_app):
         import sentry_sdk
         from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
 
-        if not sentry_sdk.Hub.current.client:
+        if not sentry_sdk.is_initialized():
             sentry_sdk.init(
                 dsn=sentry_dsn,
                 integrations=[],
