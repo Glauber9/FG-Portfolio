@@ -3,10 +3,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
-
+from django.utils import timezone
 from unfold.admin import ModelAdmin
 from unfold.decorators import action
-
 from .forms import ImportarContatosForm
 from .importers import importar_contatos
 from .models import Contato, GrupoContatos
@@ -116,7 +115,7 @@ class ContatoAdmin(ModelAdmin):
 
     @admin.action(description='Reativar contatos selecionados')
     def reativar_contatos(self, request, queryset):
-        queryset.update(ativo=True, opt_out=False, opt_out_em=None)
+        queryset.update(ativo=True, opt_out=False, opt_out_em=None, atualizado_em=timezone.now())
         self.message_user(request, f'{queryset.count()} contato(s) reativado(s) com sucesso.')
 
 
