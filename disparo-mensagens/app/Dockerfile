@@ -7,7 +7,6 @@ ENV PIP_NO_CACHE_DIR=1
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
     libpq-dev \
     build-essential \
     libjpeg-dev \
@@ -35,5 +34,6 @@ RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 USER appuser
 EXPOSE 8000
+
 
 
