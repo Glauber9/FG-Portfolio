@@ -20,8 +20,6 @@ class Contato(models.Model):
         verbose_name_plural = 'Contatos'
         ordering = ['-criado_em']
         indexes = [
-            models.Index(fields=['telefone']),
-            models.Index(fields=['email']),
             models.Index(fields=['opt_out']),
         ]
 
