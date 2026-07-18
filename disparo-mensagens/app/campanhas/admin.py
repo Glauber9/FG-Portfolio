@@ -1,6 +1,5 @@
 import functools
 from datetime import timedelta
-
 from django import forms
 from django.contrib import admin
 from django.db.models import Count
@@ -193,14 +192,21 @@ class CampanhaAdmin(ModelAdmin):
     def disparar_campanha(self, request, queryset):
         from django.utils import timezone as tz
         from .tasks import iniciar_campanha
-        for campanha in queryset.filter(status__in=['rascunho', 'agendada']):
+
+        elegiveis = queryset.filter(status__in=['rascunho', 'agendada'])
+        total = 0
+        for campanha in elegiveis:
             iniciar_campanha.delay(str(campanha.id))
             campanha.status = 'em_andamento'
             campanha.iniciada_em = tz.now()
             campanha.save(update_fields=['status', 'iniciada_em', 'atualizado_em'])
-        self.message_user(request, f'{queryset.count()} campanha(s) disparada(s).')
+            total += 1
+        self.message_user(request, f'{total} campanha(s) disparada(s).')
 
     @admin.action(description='Cancelar campanhas selecionadas')
     def cancelar_campanha(self, request, queryset):
-        queryset.filter(status__in=['rascunho', 'agendada']).update(status='cancelada')
-        self.message_user(request, f'{queryset.count()} campanha(s) cancelada(s).')
+        from django.utils import timezone as tz
+        total = queryset.filter(status__in=['rascunho', 'agendada']).update(
+        status='cancelada', atualizado_em=tz.now()
+        )
+        self.message_user(request, f'{total} campanha(s) cancelada(s).')
