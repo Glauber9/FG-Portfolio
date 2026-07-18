@@ -38,5 +38,11 @@
             });
     }
 
-    setInterval(verificar, INTERVALO_MS);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) verificar();
+    });
+
+    if (document.body.classList.contains('change-list')) {
+        setInterval(verificar, INTERVALO_MS);
+    }
 })();
