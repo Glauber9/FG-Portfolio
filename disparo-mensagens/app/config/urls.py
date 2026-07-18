@@ -1,12 +1,10 @@
 import importlib.util
-from two_factor import urls as two_factor_urls
+from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from two_factor import urls as two_factor_urls
 
 urlpatterns = [
     path('', include(two_factor_urls.urlpatterns)),
