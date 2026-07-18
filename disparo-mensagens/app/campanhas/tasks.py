@@ -2,7 +2,6 @@ import logging
 import random
 from datetime import timedelta
 from email.mime.image import MIMEImage
-
 from celery import shared_task
 from celery.exceptions import MaxRetriesExceededError
 from django.utils import timezone
@@ -10,20 +9,44 @@ from django.utils import timezone
 logger = logging.getLogger(__name__)
 
 def _gerar_horarios_envio(quantidade, inicio, fim, delay_min, delay_max):
-    horarios = []
+    if quantidade <= 0:
+        return []
+
     agora = timezone.now()
-    horario_atual = max(inicio, agora)
+    inicio_real = max(inicio, agora)
 
-    for i in range(quantidade):
-        if fim and horario_atual > fim:
+    if quantidade == 1:
+        if fim and inicio_real > fim:
+            logger.warning("Janela de envio já esgotada: enviando imediatamente")
+            return [fim]
+        return [inicio_real]
+
+    delays = [random.randint(delay_min, delay_max) for _ in range(quantidade - 1)]
+
+    if fim:
+        span_disponivel = (fim - inicio_real).total_seconds()
+
+        if span_disponivel <= 0:
             logger.warning(
-                "Janela de envio esgotada: %d envio(s) serão agendados após o fim da janela",
-                quantidade - i
+                "Janela de envio já esgotada ao iniciar campanha: os %d envio(s) serão disparados imediatamente",
+                quantidade
             )
+            delays = [0] * (quantidade - 1)
+        else:
+            span_bruto = sum(delays)
+            if span_bruto > span_disponivel:
+                fator = span_disponivel / span_bruto
+                delays = [max(0, int(delay * fator)) for delay in delays]
+                logger.warning(
+                    "Delays comprimidos (fator %.2f) para caber na janela de envio: %d envio(s)",
+                    fator, quantidade
+                )
 
-        horarios.append(horario_atual)
-        delay = random.randint(delay_min, delay_max)
+    horarios = [inicio_real]
+    horario_atual = inicio_real
+    for delay in delays:
         horario_atual = horario_atual + timedelta(seconds=delay)
+        horarios.append(horario_atual)
 
     return horarios
 
