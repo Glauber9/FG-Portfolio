@@ -1,13 +1,11 @@
 from __future__ import annotations
-
 import csv
+import io
 import unicodedata
 from pathlib import Path
-
 from django.db import transaction
 from django.utils import timezone
 from openpyxl import load_workbook
-
 from .models import Contato
 
 FIELD_ALIASES = {
@@ -50,7 +48,7 @@ def _pick_value(row: dict[str, object], aliases: tuple[str, ...]) -> str:
 def _rows_from_csv(arquivo) -> list[dict[str, object]]:
     arquivo.seek(0)
     conteudo = arquivo.read().decode('utf-8-sig')
-    reader = csv.DictReader(conteudo.splitlines())
+    reader = csv.DictReader(io.StringIO(conteudo))
     return list(reader)
 
 
@@ -126,10 +124,8 @@ def importar_contatos_de_linhas(linhas: list[dict[str, object]]) -> dict[str, ob
                     'nome': nome,
                     'telefone': telefone,
                     'email': email,
+                    'ativo': ativo,
                 }
-
-                if ativo is not None:
-                    dados['ativo'] = ativo
 
                 if opt_out is not None:
                     dados['opt_out'] = opt_out
@@ -145,12 +141,16 @@ def importar_contatos_de_linhas(linhas: list[dict[str, object]]) -> dict[str, ob
                 else:
                     Contato.objects.create(**dados)
                     resumo['criados'] += 1
-        except Exception as exc:  # pragma: no cover - defensive summary collection
+        except Exception as exc:
             resumo['ignorados'] += 1
             resumo['erros'].append(f'Linha {indice}: {exc}')
 
     return resumo
 
+
+def importar_contatos(arquivo) -> dict[str, object]:
+    linhas = carregar_linhas_de_arquivo(arquivo)
+    return importar_contatos_de_linhas(linhas)
 
 def importar_contatos(arquivo) -> dict[str, object]:
     linhas = carregar_linhas_de_arquivo(arquivo)
