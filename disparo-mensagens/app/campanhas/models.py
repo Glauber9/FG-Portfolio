@@ -138,8 +138,7 @@ class Campanha(models.Model):
         verbose_name_plural = 'Campanhas'
         ordering = ['-criado_em']
         indexes = [
-            models.Index(fields=['status']),
-            models.Index(fields=['agendada_para']),
+            models.Index(fields=['status', 'agendada_para']),
             models.Index(fields=['envios_inicio_em']),
             models.Index(fields=['envios_fim_em']),
         ]
