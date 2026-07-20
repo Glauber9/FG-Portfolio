@@ -1,4 +1,4 @@
-# 💳 POS Reconciliation Automation (Excel + Power Query)
+# POS Reconciliation Automation (Excel + Power Query)
 
 Automated solution for the daily financial closing and card sales reconciliation process across two or more card machines from different acquirers, built entirely in **Excel + Power Query**.
 
@@ -6,19 +6,16 @@ Automated solution for the daily financial closing and card sales reconciliation
 
 ---
 
-## 🎯 The Problem
+## Motivation for development
 
 Cash closing used to be a **100% manual** process: copying values from each card machine, comparing them against the internal system, typing in differences, and putting together the day's report. Besides the operational time spent, this routine was prone to **human errors in data entry and reconciliation**, which extended the time spent on rework and results auditing even further.
-
-## ✅ The Solution
-
 With automation via Power Query, the closing process — which used to take a considerable amount of time every day — is now completed in **under 1 minute**. Discrepancies between the system and the machines, which used to require hours of manual digging, are now automatically identified and flagged directly on the dashboard.
 
 ![Update All demo](./pic/demo-atualizar.gif)
 
 ---
 
-## 🏗️ Project Architecture
+## Project Architecture
 
 The core of this project isn't the visuals — it's the architecture behind it:
 
@@ -36,7 +33,7 @@ Raw CSV (acquirer)  →  Native Excel Table  →  Power Query (ETL)  →  Dashbo
 
 ---
 
-## 🔄 How to Import New Data
+## How to Import New Data
 
 One of the core points of this automation is that **updating the closing report requires no manual formulas** — just pasting the new data and refreshing. The flow is:
 
@@ -48,7 +45,7 @@ One of the core points of this automation is that **updating the closing report 
 
 ---
 
-## 📊 Spreadsheet Structure
+## Spreadsheet Structure
 
 | Sheet | Function |
 |---|---|
@@ -61,7 +58,7 @@ One of the core points of this automation is that **updating the closing report 
 
 ---
 
-## 🎨 The Dashboard
+## The Dashboard
 
 The main tab was designed following modern UI standards:
 
@@ -73,19 +70,19 @@ The main tab was designed following modern UI standards:
 
 ---
 
-## 🛠️ Technologies
+## Technologies
 
 `Excel` · `Power Query (M)` · `Power Pivot`
 
 ---
 
-## 📂 File Access
+## File Access
 
 [Click here to download the spreadsheet](https://github.com/Glauber9/FG-Portfolio/blob/main/automacao-fechamento-excel/Planilha_de_automacao_de_fechamento.xlsx)
 
 ---
 
-## 🚀 Next Steps (V2)
+## Next Steps (V2)
 
 This project serves as the foundation for **Version 2**, to be developed and released later, where all the logic currently implemented in Power Query will be migrated to:
 
