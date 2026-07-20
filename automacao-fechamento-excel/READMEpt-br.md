@@ -1,4 +1,4 @@
-# 💳 Automação de Conciliação de Vendas PDV (Excel + Power Query)
+# Automação de Conciliação de Vendas PDV (Excel + Power Query)
 
 Solução automatizada para o processo de fechamento financeiro diário e conciliação de vendas entre duas ou mais máquinas de cartão de diferentes adquirentes, construída inteiramente em **Excel + Power Query**.
 
@@ -7,12 +7,9 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 ---
 
-## 🎯 O Problema
+## Motivação para desenvolvimento
 
 O fechamento de caixa era um processo **100% manual**: copiar valores de cada máquina de cartão, comparar com o sistema interno, digitar diferenças e montar o relatório do dia. Além do tempo operacional gasto, essa rotina era vulnerável a **erros humanos de digitação e conciliação**, o que gerava ainda mais retrabalho e horas de auditoria quando algo não batia.
-
-## ✅ A Solução
-
 Com a automação via Power Query, o fechamento — que antes levava um tempo considerável todos os dias — agora é concluído em **menos de 1 minuto**. Divergências entre sistema e máquinas, que antes exigiam horas de busca manual, hoje são identificadas e sinalizadas automaticamente no próprio painel.
 
 ![Demonstração do Atualizar Tudo](./pic/demo-atualizar.gif)
@@ -20,7 +17,7 @@ Com a automação via Power Query, o fechamento — que antes levava um tempo co
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+## Arquitetura do Projeto
 
 A parte principal deste projeto não é o visual — é a arquitetura por trás dele:
 
@@ -39,7 +36,7 @@ CSV bruto (adquirente)  →  Tabela nativa Excel  →  Power Query (ETL)  →  D
 
 ---
 
-## 🔄 Como Importar Novos Dados
+## Sobre Importar Novos Dados
 
 Um dos pontos centrais da automação é que **atualizar o fechamento não exige nenhuma fórmula manual** — só colar os dados novos e atualizar. O fluxo é:
 
@@ -52,7 +49,7 @@ Um dos pontos centrais da automação é que **atualizar o fechamento não exige
 
 ---
 
-## 📊 Estrutura da Planilha
+## Estrutura da Planilha
 
 | Aba | Função |
 |---|---|
@@ -66,7 +63,7 @@ Um dos pontos centrais da automação é que **atualizar o fechamento não exige
 
 ---
 
-## 🎨 O Dashboard
+## Dashboard
 
 A aba principal foi desenhada seguindo padrões modernos de UI:
 
@@ -78,19 +75,19 @@ A aba principal foi desenhada seguindo padrões modernos de UI:
 
 ---
 
-## 🛠️ Tecnologias
+## Ferramentas Usadas
 
 `Excel` · `Power Query (M)` · `Power Pivot`
 
 ---
 
-## 📂 Acesso ao Arquivo
+## Acesso ao Arquivo
 
 [Clique aqui para baixar a planilha](https://github.com/Glauber9/FG-Portfolio/blob/main/automacao-fechamento-excel/Planilha_de_automacao_de_fechamento.xlsx)
 
 ---
 
-## 🚀 Próximos Passos (V2)
+## Próximos Passos (V2)
 
 Este projeto serve de base para a **Versão 2**, que será desenvolvida e lançada posteriormente, onde toda a lógica hoje implementada em Power Query será migrada para:
 
