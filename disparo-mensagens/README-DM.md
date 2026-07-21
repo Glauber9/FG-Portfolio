@@ -1,6 +1,6 @@
-# 📲 Campanhas de Mensagens
+# Campanhas de Mensagens
 
-Sistema de disparo de mensagens em massa via WhatsApp, construído com **Django**, **Celery**, **PostgreSQL**, **Redis** e **Evolution API**, orquestrado com **Docker Compose** em ambientes separados para desenvolvimento e produção.
+Este projeto foi desenvolvido para o disparo de campanhas de mensagens em massa via WhatsApp e e-mail. A arquitetura é construída sobre 7 tecnologias open-source — Django, Celery, PostgreSQL, Redis, Nginx, Evolution API e Docker Compose — orquestradas em containers dentro de uma rede Docker isolada. O projeto também conta com arquivos de configuração dedicados, que separam claramente os ambientes de desenvolvimento e produção.
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-092E20?logo=django&logoColor=white)
@@ -12,7 +12,7 @@ Sistema de disparo de mensagens em massa via WhatsApp, construído com **Django*
 
 ---
 
-## 📑 Índice
+## Índice
 
 - [Sobre o projeto](#-sobre-o-projeto)
 - [Arquitetura e fluxo de subida](#-arquitetura-e-fluxo-de-subida)
@@ -27,7 +27,7 @@ Sistema de disparo de mensagens em massa via WhatsApp, construído com **Django*
 
 ---
 
-## 🧾 Sobre o projeto
+## Sobre o projeto
 
 O Django concentra as regras da aplicação, as telas e os endpoints. O Celery executa tarefas em segundo plano, como filas e rotinas agendadas. O PostgreSQL guarda os dados, o Redis serve como fila e cache, e o Nginx fica na frente do Django quando o projeto vai para produção.
 
@@ -40,7 +40,7 @@ O Django concentra as regras da aplicação, as telas e os endpoints. O Celery e
 
 ---
 
-## 🏗️ Arquitetura e fluxo de subida
+## Arquitetura e fluxo de subida
 
 No Docker, os serviços sobem juntos com `docker-compose`, em ordem:
 
@@ -55,7 +55,7 @@ No Docker, os serviços sobem juntos com `docker-compose`, em ordem:
 
 ---
 
-## ⚙️ Pré-requisitos
+## Pré-requisitos
 
 - Docker 20.10 ou superior
 - Docker Compose 2.x
@@ -64,7 +64,7 @@ No Docker, os serviços sobem juntos com `docker-compose`, em ordem:
 
 ---
 
-## 🚀 Primeira configuração
+## Primeira configuração
 
 ### 1. Preparar o ambiente
 
@@ -113,7 +113,7 @@ docker-compose logs -f disparo_django
 
 ---
 
-## 🔐 Variáveis de ambiente e segredos
+## Variáveis de ambiente e segredos
 
 | Arquivo | Uso |
 |---|---|
@@ -137,7 +137,7 @@ O `.env` guarda apenas configuração **não sensível** — hosts, portas e fla
 
 ---
 
-## 🧪 Ambiente local vs. produção
+## Ambiente local vs. produção
 
 Não é necessário duplicar todos os arquivos do projeto — o que muda entre local e produção é principalmente configuração.
 
@@ -164,7 +164,7 @@ Não é necessário duplicar todos os arquivos do projeto — o que muda entre l
 
 ---
 
-## 📂 Estrutura de diretórios
+## Estrutura de diretórios
 
 ```
 disparo-mensagens/
@@ -203,7 +203,7 @@ Se alguma variável obrigatória estiver faltando ou se uma dependência não ca
 
 ---
 
-## 📥 Importação de contatos
+## Importação de contatos
 
 O projeto aceita importação de contatos por três caminhos:
 
@@ -261,7 +261,7 @@ curl -X POST http://localhost:8000/contatos/api/importar/ \
 
 ---
 
-## 🛠️ Comandos úteis
+## Comandos úteis
 
 ### Logs
 
@@ -326,7 +326,7 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 ---
 
-## 🤝 Contato e contribuição
+## Contato e contribuição
 
 Para dúvidas ou contribuições, abra uma issue ou PR.
 
