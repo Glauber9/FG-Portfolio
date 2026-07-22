@@ -17,7 +17,7 @@ Este projeto foi desenvolvido para o disparo de campanhas de mensagens em massa 
 - [Sobre o projeto](#sobre-o-projeto)
 - [Tecnologias utilizadas](#tecnologias-utilizadas)
 - [Fluxograma de Disparo de Campanhas](#fluxograma-de-disparo-de-campanhas)
-- [Capturas de tela](#capturas-de-tela)
+- [Exposição Visual do Projeto](#exposição-visual-do-projeto)
 - [Considerações técnicas importantes](#considerações-técnicas-importantes)
 - [Configuração do ambiente (local e produção)](#configuração-do-ambiente-local-e-produção)
 - [Estrutura de diretórios](#estrutura-de-diretórios)
@@ -87,28 +87,26 @@ flowchart TD
 ```
 ---
  
-## Capturas de tela
+## Exposição Visual do Projeto
  
-> Adicione aqui prints/gifs reais do projeto rodando. Sugestões do que capturar:
  
 **Dashboard inicial (Unfold)**
-`![Dashboard](docs/screenshots/dashboard.gif)`
-*Visão geral com KPIs de campanhas em andamento, envios do dia e taxa de sucesso.*
+`![Dashboard](docs/dashboard.gif)`
+
  
 **Relatório agrupado de envios**
-`![Relatório de envios](docs/screenshots/relatorio-envios.png)`
-*Status de WhatsApp e e-mail lado a lado por contato, com os ícones de status (✓, ✓✓, lido).*
+`![Relatório de envios](docs/relatorio-envios.gif)`
+
  
-**Criação de campanha**
-`![Criar campanha](docs/screenshots/criar-campanha.gif)`
-*GIF mostrando a seleção de grupos/contatos, template e janela de envio.*
+**Templates de Mensagens e Campanhas**
+`![Criar campanha](docs/criar-campanha.gif)`
+
  
 **Painel da Evolution API (conexão do WhatsApp)**
-`![Evolution Manager](docs/screenshots/evolution-manager.png)`
-*Tela de QR Code e status da instância conectada.*
+`![Evolution Manager](docs/evolution-manager.png)`
  
 **Importação de contatos via CSV/XLSX**
-`![Importação de contatos](docs/screenshots/importar-contatos.gif)`
+`![Importação de contatos](docs/importar-contatos.png)`
  
 ---
  
