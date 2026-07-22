@@ -369,7 +369,7 @@ curl -X POST http://localhost:8000/contatos/api/importar/ \
  
 ## Contato e contribuição
 
-Projeto pessoal, desenvolvido para fins de estudo e portfólio. Sugestões, issues e pull requests são bem-vindos.
+Sugestões, issues e pull requests são bem-vindos.
 
 - **Autor:** _Felipe Glauber_
 - **E-mail (Gmail):** _fglauberca_
