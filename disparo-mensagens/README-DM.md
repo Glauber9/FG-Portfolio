@@ -102,7 +102,7 @@ flowchart TD
 <img src="docs/relatorio-envios.gif" width="700">
 
 
-*Status de WhatsApp e e-mail lado a lado por contato, com os ícones de status (✓, ✓✓, lido).*
+*Status de WhatsApp e e-mail lado a lado por contato.*
 
 ---
 **Templates de Mensagens e Campanhas**
@@ -126,7 +126,7 @@ flowchart TD
 <img src="docs/importar-contatos.png" width="700">
 
 
-*Importação em lote com resumo de criados, atualizados e erros.*
+*Importação em lote.*
  
 ---
  
