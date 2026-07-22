@@ -94,3 +94,11 @@ Este projeto serve de base para a **Versão 2**, que será desenvolvida e lança
 - Scripts em **Python** para o ETL
 - Banco de dados **PostgreSQL**
 - Relatórios dinâmicos em **Power BI**
+
+## Contato e contribuição
+
+Projeto pessoal, desenvolvido para fins de estudo e portfólio. Sugestões, issues e pull requests são bem-vindos.
+
+- **Autor:** _Felipe Glauber_
+- **E-mail (Gmail):** _fglauberca_
+- **LinkedIn:** _[linkedin.com/in/felipe-glauberca](https://www.linkedin.com/in/felipe-glauberca)_
