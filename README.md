@@ -25,3 +25,11 @@ Automação de conciliação de vendas e fechamento de caixa, eliminando o proce
 ![Excel](https://img.shields.io/badge/Excel-217346?logo=microsoftexcel&logoColor=white)
 ![Power Query](https://img.shields.io/badge/Power%20Query-217346?logo=powerbi&logoColor=white)
 ![VBA](https://img.shields.io/badge/VBA-8B0000?logo=visualstudio&logoColor=white)
+
+---
+
+## Contato e contribuição
+
+- **Autor:** _Felipe Glauber_
+- **E-mail (Gmail):** _fglauberca_
+- **LinkedIn:** _[linkedin.com/in/felipe-glauberca](https://www.linkedin.com/in/felipe-glauberca)_
