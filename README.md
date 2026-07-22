@@ -1,5 +1,5 @@
 # FG-Portfolio
-Various automation projects.
+Projetos de Automação e Otimização.
 
 ---
 
