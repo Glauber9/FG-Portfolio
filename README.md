@@ -1,6 +1,8 @@
 # FG-Portfolio
 Various automation projects.
+
 ---
+
 # Campanhas de Mensagens
 
 Este projeto foi desenvolvido para o disparo de campanhas de mensagens em massa via WhatsApp e e-mail.
@@ -13,3 +15,13 @@ Este projeto foi desenvolvido para o disparo de campanhas de mensagens em massa 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white)
 ![Evolution API](https://img.shields.io/badge/Evolution_API-25D366?logo=whatsapp&logoColor=white)
+
+---
+
+# Automação de Conciliação de Vendas PDV (Excel + Power Query)
+
+Automação de conciliação de vendas e fechamento de caixa, eliminando o processo manual em planilhas com Power Query.
+ 
+![Excel](https://img.shields.io/badge/Excel-217346?logo=microsoftexcel&logoColor=white)
+![Power Query](https://img.shields.io/badge/Power%20Query-217346?logo=powerbi&logoColor=white)
+![VBA](https://img.shields.io/badge/VBA-8B0000?logo=visualstudio&logoColor=white)
