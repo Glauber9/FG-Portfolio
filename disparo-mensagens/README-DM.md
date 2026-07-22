@@ -88,25 +88,45 @@ flowchart TD
 ---
  
 ## Exposição Visual do Projeto
- 
- 
+
 **Dashboard inicial (Unfold)**
-`![Dashboard](docs/Dashboard.gif)`
 
- 
+<img src="docs/Dashboard.gif" width="700">
+
+
+*Visão geral com KPIs de campanhas em andamento, envios do dia e taxa de sucesso.*
+
+---
 **Relatório agrupado de envios**
-`![Relatório de envios](docs/relatorio-envios.gif)`
 
- 
+<img src="docs/relatorio-envios.gif" width="700">
+
+
+*Status de WhatsApp e e-mail lado a lado por contato, com os ícones de status (✓, ✓✓, lido).*
+
+---
 **Templates de Mensagens e Campanhas**
-`![Criar campanha](docs/criar-campanha.gif)`
 
- 
+<img src="docs/criar-campanha.gif" width="700">
+
+
+*Criação de template com mídia, link e configuração de opt-out.*
+
+---
 **Painel da Evolution API (conexão do WhatsApp)**
-`![Evolution Manager](docs/evolution-manager.png)`
- 
+
+<img src="docs/evolution-manager.png" width="700">
+
+
+*Tela de QR Code e status da instância conectada.*
+
+---
 **Importação de contatos via CSV/XLSX**
-`![Importação de contatos](docs/importar-contatos.png)`
+
+<img src="docs/importar-contatos.png" width="700">
+
+
+*Importação em lote com resumo de criados, atualizados e erros.*
  
 ---
  
