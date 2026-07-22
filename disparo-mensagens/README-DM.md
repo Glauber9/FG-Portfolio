@@ -91,7 +91,7 @@ flowchart TD
  
  
 **Dashboard inicial (Unfold)**
-`![Dashboard](docs/dashboard.gif)`
+`![Dashboard](docs/Dashboard.gif)`
 
  
 **Relatório agrupado de envios**
