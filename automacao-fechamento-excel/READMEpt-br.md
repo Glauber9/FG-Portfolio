@@ -7,26 +7,25 @@ Solução automatizada para o processo de fechamento financeiro diário e concil
 
 ---
 
-## Motivação para desenvolvimento
+## Desenvolvimento
 
-O fechamento de caixa era um processo **100% manual**: copiar valores de cada máquina de cartão, comparar com o sistema interno, digitar diferenças e montar o relatório do dia. Além do tempo operacional gasto, essa rotina era vulnerável a **erros humanos de digitação e conciliação**, o que gerava ainda mais retrabalho e horas de auditoria quando algo não batia.
-Com a automação via Power Query, o fechamento — que antes levava um tempo considerável todos os dias — agora é concluído em **menos de 1 minuto**. Divergências entre sistema e máquinas, que antes exigiam horas de busca manual, hoje são identificadas e sinalizadas automaticamente no próprio painel.
+Esse projeto foi feito para solucionar um problema real, automatizar um fechamento de caixa totalmente manual. Era preciso copiar valores de cada máquina de cartão, comparar com o sistema interno, digitar diferenças e montar o relatório do dia. Com a automação via Power Query, o fechamento que antes levava cerca de 30min a 40min com a planilha agora é concluído em cerca de 2min. Qualquer divergência entre sistema e máquinas, antes exigiriam algumas horas de busca manual, agora são identificadas facilmente de imediato atráves dos indicadores.
 
 ![Demonstração do Atualizar Tudo](./pic/demo-atualizar.gif)
 
 
 ---
 
-## Arquitetura do Projeto
+## Arquitetura
 
-A parte principal deste projeto não é o visual — é a arquitetura por trás dele:
+A arquitetura do projeto é baseada em Power Query:
 
 ```
 CSV bruto (adquirente)  →  Tabela nativa Excel  →  Power Query (ETL)  →  Dashboard
    (7Pay / Sipag)          (Vendas 7Pay/Sipag)     (limpeza + regras)      (KPIs)
 ```
 
-1. **Camada de ETL (Power Query)**: em vez de colagem manual, o Power Query se conecta às tabelas de origem e trata os dados extraídos dos sistemas das adquirentes.
+1. **Camada de ETL (Power Query)**:O Power Query se conecta às tabelas de origem e trata os dados extraídos dos sistemas das adquirentes.
 2. **Tratamento de Dados**: filtros automáticos removem registros vazios/inúteis, padronizam nomenclatura ("pix" → "Pix", "Debito" → "Débito" etc.) e formatam datas/horas.
 3. **Regras de Negócio**: cálculo automático de divergências entre o valor do sistema interno e o valor batido pelas máquinas, com tratamento de erro (`IFERROR`) e arredondamento para eliminar ruído de ponto flutuante do Excel.
 4. **Parâmetros dinâmicos**: uma tabela de configuração (`Filtro_Periodo`) define o intervalo de datas do fechamento, usada por todas as consultas — basta alterar duas células para reprocessar tudo.
